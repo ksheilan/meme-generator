@@ -10,11 +10,16 @@
 </head>
 
 <body onload="onInit()">
-    <header>Header</header>
-    <section class="gallery"></section>
-    <section class="editor">
-        <div class="canvas-container">
-            <h3>Container</h3>
+    <header class = "flex align-center center">Header</header>
+    <section class="gallery flex align-center center"></section>
+    <section class="editor flex align-center center">
+        <div class="canvas-container flex align-center">
+            <h3>Canvas Container</h3>
+            <input
+                    class="text-box"
+                    type="text"
+                    placeholder="Change Top Text.."
+                    onkeyup="onUpdateActiveText()">
             <canvas id="meme-canvas"
                     width="400"
                     height="400"
@@ -26,7 +31,6 @@
     </section>
     <script src="js/services/meme.services.js"></script>
     <script src="js/meme.controller.js"></script>
-    <script src="js/canvas.controller.js"></script>
     <script src="js/main.js"></script>
 </body>
 

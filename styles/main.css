@@ -1,0 +1,37 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+}
+
+
+/* FLEX BASE */
+
+.flex {
+    display: flex;
+}
+
+.flex.align-center {
+    align-items: center;
+}
+
+.flex.space-between {
+    justify-content: space-between;
+}
+
+.flex.center {
+    justify-content: center;
+}
+
+/* CANVAS CONTAINER */
+
+.canvas-container{
+    flex-direction: column;
+}
+
+/* Meme Editor */
+.text-box{
+    margin: 10px auto;
+}

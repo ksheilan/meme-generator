@@ -1,7 +1,40 @@
 'use strict'
 
-function renderMeme(){
-    onDrawImg()
+let gElCanvas = document.getElementById('meme-canvas')
+let gCtx = gElCanvas.getContext('2d')
+
+
+function onClearCanvas(){
+    //Set the backgournd color to grey
+    gCtx.fillStyle = '#fff'
+    //Clear the canvas,  fill it with grey background
+    gCtx.fillRect(0, 0, gElCanvas.width, gElCanvas.height)
+}
+function onRenderMeme(width = gElCanvas.width, height = gElCanvas.height) {
+    const elImg = new Image()
+    const meme = getMeme()
+    // Text added manually for testing purposes
+    elImg.src = meme.bgImage
+    elImg.onload = () => {
+        gCtx.drawImage(elImg, 0, 0, width, height)
+        meme.layers.forEach(layer => {
+            const {val, pos} = layer
+            onDrawText(val, pos.x, pos.y)
+        })
+    }
+}
+
+
+function onDrawText(text, x, y) {
+    gCtx.lineWidth = 2
+    gCtx.strokeStyle = 'black'
+    gCtx.fillStyle = 'white'
+    gCtx.font = "40px impact";
+    gCtx.textAlign = 'center'
+    gCtx.textBaseline = 'middle'
+
+    gCtx.fillText(text, x, y) // Draws (fills) a given text at the given (x, y) position.
+    gCtx.strokeText(text, x, y) // Draws (strokes) a given text at the given (x, y) position.
 }
 
 function resizeCanvas(width) {
@@ -12,16 +45,20 @@ function resizeCanvas(width) {
     // gElCanvas.height = elContainer.offsetHeight
 }
 
-function drawNice() {
-    var img = new Image();
-    img.onload = function () {
-        gCtx.drawImage(img, 0, 0);
-    };
-    img.src = 'images/1.jpg';
-    console.log('gCtx-image', gCtx);
-    // add text on top of the image
-    gCtx.font = '24px Arial';
-    gCtx.fillStyle = '#fff';
-    gCtx.fillText('Hello, world!', 10, 30);
-    console.log('gCtx-afterText', gCtx);
+function onUpdateActiveText() {
+    const activeTextIdx = 2; // Placeholder untill I add text selection
+    setTimeout(() => {
+        const inputVal = document.querySelector('.text-box').value
+        const meme = getMeme()
+        meme.layers[activeTextIdx].val = inputVal
+        onRenderMeme()
+        // if (!inputVal) document.querySelector('.text-box').classList.add('w-25')
+        // const filterBy = setBooksFilter(inputVal)
+        // renderBooks()
+        // document.querySelector('.text-box').value = inputVal
+
+        // const queryStringParams = `?bookName=${filterBy.bookName}`
+        // const newUrl = window.location.protocol + "//" + window.location.host + window.location.pathname + queryStringParams
+        // window.history.pushState({ path: newUrl }, '', newUrl)
+    }, 500);
 }
