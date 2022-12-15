@@ -3,9 +3,9 @@
 let gMeme = createMeme()
 
 // Placeholders for testing purposes
-addMemeLayer(createMemeLayer('Top Text', 'txt', { x: 200, y: 50 }))
-addMemeLayer(createMemeLayer('Middle Text', 'txt', { x: 200, y: 200 }))
-addMemeLayer(createMemeLayer('Bottom Text', 'txt', { x: 200, y: 350 }))
+addMemeLayer(createMemeLayer('Top Text', 'txt', { x: 0.5, y: 0.1 }))
+addMemeLayer(createMemeLayer('Middle Text', 'txt', { x: 0.5, y: 0.5 }))
+addMemeLayer(createMemeLayer('Bottom Text', 'txt', { x: 0.5, y: 0.9 }))
 console.log('gMeme', gMeme);
 
 

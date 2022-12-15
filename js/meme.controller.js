@@ -11,6 +11,8 @@ function onClearCanvas(){
     gCtx.fillRect(0, 0, gElCanvas.width, gElCanvas.height)
 }
 function onRenderMeme(width = gElCanvas.width, height = gElCanvas.height) {
+    gElCanvas.width = width
+    gElCanvas.height = height
     const elImg = new Image()
     const meme = getMeme()
     // Text added manually for testing purposes
@@ -19,13 +21,14 @@ function onRenderMeme(width = gElCanvas.width, height = gElCanvas.height) {
         gCtx.drawImage(elImg, 0, 0, width, height)
         meme.layers.forEach(layer => {
             const {val, pos} = layer
-            onDrawText(val, pos.x, pos.y, meme.fontSize, meme.fontColor)
+            onDrawText(val, pos.x * width, pos.y * height, meme.fontSize, meme.fontColor)
         })
     }
 }
 
 
 function onDrawText(text, x, y, size, color) {
+
     gCtx.lineWidth = 2
     gCtx.strokeStyle = 'black'
     gCtx.fillStyle = color
@@ -63,10 +66,13 @@ function onUpdateActiveText() {
     }, 500);
 }
 
-function onImgSelect(val){
+function onImgSelect(val, test){
+    console.log('this', test.width, test.height);
+    let canvasHeight = test.height / test.width * gElCanvas.width
+    console.log('canvasHeight', canvasHeight);
     setMemeImage(val)
 
-    onRenderMeme()
+    onRenderMeme(gElCanvas.width, canvasHeight)
 }
 
 function onFontChange(isIncrease = true){
