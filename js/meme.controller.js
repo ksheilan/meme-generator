@@ -13,17 +13,20 @@ function onClearCanvas(){
 function onRenderMeme(width = gElCanvas.width, height = gElCanvas.height) {
     gElCanvas.width = width
     gElCanvas.height = height
+    setMemeSize({width, height})
     const elImg = new Image()
     const meme = getMeme()
-    // Text added manually for testing purposes
     elImg.src = meme.bgImage
     elImg.onload = () => {
         gCtx.drawImage(elImg, 0, 0, width, height)
         meme.layers.forEach(layer => {
             const {val, pos} = layer
-            onDrawText(val, pos.x * width, pos.y * height, meme.fontSize, meme.fontColor)
+            const {size, color} = val.fontSettings
+            onDrawText(val.content, pos.x * width, pos.y * height, size, color)
         })
     }
+
+    console.log(meme);
 }
 
 
@@ -51,9 +54,9 @@ function resizeCanvas(width) {
 function onUpdateActiveText() {
     const activeTextIdx = getActiveLayer();
     setTimeout(() => {
-        const inputVal = document.querySelector('.text-box').value
+        const inputVal = document.getElementById('text-box').value
         const meme = getMeme()
-        meme.layers[activeTextIdx].val = inputVal
+        meme.layers[activeTextIdx].val.content = inputVal
         onRenderMeme()
         // if (!inputVal) document.querySelector('.text-box').classList.add('w-25')
         // const filterBy = setBooksFilter(inputVal)
@@ -67,9 +70,7 @@ function onUpdateActiveText() {
 }
 
 function onImgSelect(val, test){
-    console.log('this', test.width, test.height);
     let canvasHeight = test.height / test.width * gElCanvas.width
-    console.log('canvasHeight', canvasHeight);
     setMemeImage(val)
 
     onRenderMeme(gElCanvas.width, canvasHeight)
@@ -77,6 +78,7 @@ function onImgSelect(val, test){
 
 function onFontChange(isIncrease = true){
     let changeValue = isIncrease ? 2 : -2
+    console.log('getFontSize()', getFontSize());
     setFontSize(getFontSize() + changeValue)
     onRenderMeme()
 }
