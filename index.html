@@ -10,27 +10,30 @@
 </head>
 
 <body onload="onInit()">
-    <header class = "flex align-center center">Header</header>
-    <section class="gallery flex align-center center"></section>
+    <header class="flex align-center center">Header</header>
     <section class="editor flex align-center center">
-        <div class="canvas-container flex align-center">
-            <h3>Canvas Container</h3>
-            <input
-                    class="text-box"
-                    type="text"
-                    placeholder="Change Top Text.."
-                    onkeyup="onUpdateActiveText()">
-            <canvas id="meme-canvas"
-                    width="400"
-                    height="400"
-                    style="outline: 1px solid green">
-
-
-            </canvas>
+        <!-- <h3>Canvas Container</h3> -->
+        <div class="editor-controls">
+            <input class="text-box" type="text" placeholder="Change Top Text.." onkeyup="onUpdateActiveText()">
+            <input type="color" id="favcolor" name="favcolor" value="#ffffff" oninput="onColorChange(this.value)">
+            <button onclick="onFontChange(true)">A+</button>
+            <button onclick="onFontChange(false)">A-</button>
+            <button onclick="onLayerToggle()">Toggle Lines</button>
         </div>
+        <canvas id="meme-canvas" width="400" height="400" style="outline: 1px solid green"></canvas>
+        <!-- <div class="canvas-container flex align-center">
+            <canvas id="meme-canvas" width="400" height="400" style="outline: 1px solid green"></canvas>
+            
+        </div> -->
+    </section>
+    <section class="gallery flex align-center center">
+        <img src="images/10.jpg" alt="" srcset="" onclick="onImgSelect('images/10.jpg')">
+        <img src="images/12.jpg" alt="" srcset="" onclick="onImgSelect('images/12.jpg')">
     </section>
     <script src="js/services/meme.services.js"></script>
+    <script src="js/services/gallery.services.js"></script>
     <script src="js/meme.controller.js"></script>
+    <script src="js/gallery.controller.js"></script>
     <script src="js/main.js"></script>
 </body>
 

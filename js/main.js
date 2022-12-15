@@ -2,6 +2,7 @@
 
 function onInit(){
     onRenderMeme()
+    onRenderGallery()
     onClearCanvas()
     // window.addEventListener('resize', () => {
     //     resizeCanvas()

@@ -27,8 +27,9 @@ body {
 
 /* CANVAS CONTAINER */
 
-.canvas-container{
+.editor{
     flex-direction: column;
+    margin-bottom: 20px;
 }
 
 /* Meme Editor */

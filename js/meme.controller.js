@@ -19,17 +19,17 @@ function onRenderMeme(width = gElCanvas.width, height = gElCanvas.height) {
         gCtx.drawImage(elImg, 0, 0, width, height)
         meme.layers.forEach(layer => {
             const {val, pos} = layer
-            onDrawText(val, pos.x, pos.y)
+            onDrawText(val, pos.x, pos.y, meme.fontSize, meme.fontColor)
         })
     }
 }
 
 
-function onDrawText(text, x, y) {
+function onDrawText(text, x, y, size, color) {
     gCtx.lineWidth = 2
     gCtx.strokeStyle = 'black'
-    gCtx.fillStyle = 'white'
-    gCtx.font = "40px impact";
+    gCtx.fillStyle = color
+    gCtx.font = `${size}px impact`;
     gCtx.textAlign = 'center'
     gCtx.textBaseline = 'middle'
 
@@ -46,7 +46,7 @@ function resizeCanvas(width) {
 }
 
 function onUpdateActiveText() {
-    const activeTextIdx = 2; // Placeholder untill I add text selection
+    const activeTextIdx = getActiveLayer();
     setTimeout(() => {
         const inputVal = document.querySelector('.text-box').value
         const meme = getMeme()
@@ -61,4 +61,25 @@ function onUpdateActiveText() {
         // const newUrl = window.location.protocol + "//" + window.location.host + window.location.pathname + queryStringParams
         // window.history.pushState({ path: newUrl }, '', newUrl)
     }, 500);
+}
+
+function onImgSelect(val){
+    setMemeImage(val)
+
+    onRenderMeme()
+}
+
+function onFontChange(isIncrease = true){
+    let changeValue = isIncrease ? 2 : -2
+    setFontSize(getFontSize() + changeValue)
+    onRenderMeme()
+}
+
+function onColorChange(color){
+    setFontColor(color)
+    onRenderMeme()
+}
+
+function onLayerToggle(){
+    setActiveLayer(getActiveLayer() + 1)
 }
