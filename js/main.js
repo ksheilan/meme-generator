@@ -1,6 +1,7 @@
 'use strict'
 
 function onInit(){
+    addListeners()
     onRenderMeme()
     onRenderGallery()
     onClearCanvas()

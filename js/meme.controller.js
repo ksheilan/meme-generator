@@ -4,7 +4,7 @@ let gElCanvas = document.getElementById('meme-canvas')
 let gCtx = gElCanvas.getContext('2d')
 
 
-function onClearCanvas(){
+function onClearCanvas() {
     //Set the backgournd color to grey
     gCtx.fillStyle = '#fff'
     //Clear the canvas,  fill it with grey background
@@ -13,15 +13,15 @@ function onClearCanvas(){
 function onRenderMeme(width = gElCanvas.width, height = gElCanvas.height) {
     gElCanvas.width = width
     gElCanvas.height = height
-    setMemeSize({width, height})
+    setMemeSize({ width, height })
     const elImg = new Image()
     const meme = getMeme()
     elImg.src = meme.bgImage
     elImg.onload = () => {
         gCtx.drawImage(elImg, 0, 0, width, height)
         meme.layers.forEach(layer => {
-            const {val, pos} = layer
-            const {size, color} = val.fontSettings
+            const { val, pos } = layer
+            const { size, color } = val.fontSettings
             onDrawText(val.content, pos.x * width, pos.y * height, size, color)
         })
     }
@@ -69,25 +69,82 @@ function onUpdateActiveText() {
     }, 500);
 }
 
-function onImgSelect(val, test){
+function onImgSelect(val, test) {
     let canvasHeight = test.height / test.width * gElCanvas.width
     setMemeImage(val)
 
     onRenderMeme(gElCanvas.width, canvasHeight)
 }
 
-function onFontChange(isIncrease = true){
+function onFontChange(isIncrease = true) {
     let changeValue = isIncrease ? 2 : -2
     console.log('getFontSize()', getFontSize());
     setFontSize(getFontSize() + changeValue)
     onRenderMeme()
 }
 
-function onColorChange(color){
+function onColorChange(color) {
     setFontColor(color)
     onRenderMeme()
 }
 
-function onLayerToggle(){
+function onLayerToggle() {
     setActiveLayer(getActiveLayer() + 1)
+}
+
+function addMouseListeners() {
+    gElCanvas.addEventListener('mousemove', onMove)
+    // gElCanvas.addEventListener('mousedown', onDown)
+    // gElCanvas.addEventListener('mouseup', onUp)
+}
+
+function onMove(ev) {
+    console.log('pos', getEvPos(ev));
+    // const { isDrag } = getCircle()
+
+    // if (!isDrag) return
+
+    // const pos = getEvPos(ev)
+    // // Calc the delta , the diff we moved
+    // const dx = pos.x - gStartPos.x
+    // const dy = pos.y - gStartPos.y
+    // moveCircle(dx, dy)
+    // // Save the last pos , we remember where we`ve been and move accordingly
+    // gStartPos = pos
+    // // The canvas is render again after every move
+    // renderCanvas()
+}
+
+//Handle the listeners
+function addListeners() {
+    addMouseListeners()
+    // addTouchListeners()
+    //Listen for resize ev
+    // window.addEventListener('resize', () => {
+    //     resizeCanvas()
+    //     renderCanvas()
+
+    // })
+}
+
+function getEvPos(ev) {
+    // Gets the offset pos , the default pos
+    let pos = {
+        x: ev.offsetX,
+        y: ev.offsetY,
+    }
+    // Check if its a touch ev
+    // if (TOUCH_EVS.includes(ev.type)) {
+    //     console.log('ev:', ev)
+    //     //soo we will not trigger the mouse ev
+    //     ev.preventDefault()
+    //     //Gets the first touch point
+    //     ev = ev.changedTouches[0]
+    //     //Calc the right pos according to the touch screen
+    //     pos = {
+    //         x: ev.pageX - ev.target.offsetLeft - ev.target.clientLeft,
+    //         y: ev.pageY - ev.target.offsetTop - ev.target.clientTop,
+    //     }
+    // }
+    return pos
 }
