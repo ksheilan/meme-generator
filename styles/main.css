@@ -27,7 +27,7 @@ body {
     background-color: #fff;
     box-shadow: 0px 1px 0px #DBDBDB;
     justify-content: flex-end;
-    margin-bottom: 30px;
+    margin-bottom: 1px;
 }
 
 .logo {
@@ -67,10 +67,20 @@ body {
 /* CANVAS CONTAINER */
 
 .editor {
-    flex-direction: column;
-    margin-bottom: 20px;
+    flex-direction: row;
+    /* margin-bottom: 20px; */
 }
 
+.canvas-container{
+    flex-basis: 61.73%;
+    background: #fff;
+}
+
+.editor-controls{
+    flex-direction: column;
+    align-self: stretch;
+
+}
 /* Meme Editor */
 #text-box {
     margin: 10px auto;

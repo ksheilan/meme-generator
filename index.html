@@ -23,14 +23,16 @@
         </nav>
     </header>
     <section class="editor flex align-center center">
-        <div class="editor-controls">
+        <div class="canvas-container">
+            <canvas id="meme-canvas" width="300" height="300" style="outline: 1px solid green"></canvas>
+        </div>
+        <div class="editor-controls flex align-center">
             <input id="text-box" type="text" placeholder="Change Top Text.." onkeyup="onUpdateActiveText()">
             <input type="color" id="favcolor" name="favcolor" value="#ffffff" oninput="onColorChange(this.value)">
             <button onclick="onFontChange(true)">A+</button>
             <button onclick="onFontChange(false)">A-</button>
             <button onclick="onLayerToggle()">Toggle Lines</button>
         </div>
-        <canvas id="meme-canvas" width="300" height="300" style="outline: 1px solid green"></canvas>
     </section>
     <div class="search-container">
         <input id="search-box" type="text" placeholder="Search.." onkeyup="onSearchImage()">

@@ -105,13 +105,29 @@ function onLayerToggle() {
 
 function addMouseListeners() {
     gElCanvas.addEventListener('mousemove', onMove)
-    gElCanvas.addEventListener('mousedown', onClick)
-    // gElCanvas.addEventListener('mousedown', onDown)
+    gElCanvas.addEventListener('mouseup', onClick)
+    gElCanvas.addEventListener('mousedown', onDown)
     // gElCanvas.addEventListener('mouseup', onUp)
 }
 
-function onClick(ev){
-    console.log('nice');
+function onClick(){
+    let activeLayerIdx = getHoveredLayerIndex()
+    if (activeLayerIdx !== -1){
+        let meme = getMeme()
+        setActiveLayer(activeLayerIdx)
+        console.log(meme.layers[activeLayerIdx]);
+        document.getElementById('text-box').value = meme.layers[activeLayerIdx].val.content
+        // setFontColor("#FFFF00")
+        onRenderMeme()
+    }
+    else{
+        console.log('nice');
+    }
+}
+
+function onDown(ev){
+    console.log('asd');
+    // document.body.style.cursor = 'text'
 }
 function onMove(ev) {
     // const { isDrag } = getCircle()
