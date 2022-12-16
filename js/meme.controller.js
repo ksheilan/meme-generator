@@ -105,10 +105,14 @@ function onLayerToggle() {
 
 function addMouseListeners() {
     gElCanvas.addEventListener('mousemove', onMove)
+    gElCanvas.addEventListener('mousedown', onClick)
     // gElCanvas.addEventListener('mousedown', onDown)
     // gElCanvas.addEventListener('mouseup', onUp)
 }
 
+function onClick(ev){
+    console.log('nice');
+}
 function onMove(ev) {
     // const { isDrag } = getCircle()
 
@@ -116,20 +120,20 @@ function onMove(ev) {
 
     const pos = getEvPos(ev)
     let layerIdx = getHoveredLayerIndexByBounds(pos)
-    if (layerIdx !== -1) {
+    let hoveredIdx = getHoveredLayerIndex()
+    if (layerIdx !== -1 && hoveredIdx === -1) {
         setHoveredLayer(layerIdx, true)
         onRenderMeme()
 
         return
 
     }
-    layerIdx = getHoveredLayerIndex()
-    if (layerIdx !== -1){
-        setHoveredLayer(layerIdx, false)
+    // layerIdx = getHoveredLayerIndex()
+    if (layerIdx === -1 && hoveredIdx !== -1){
+        setHoveredLayer(hoveredIdx, false)
         onRenderMeme()
     }
     
-
     // setHoveredLayer(layer.idx, false)
     // onRenderMeme()
     // // Calc the delta , the diff we moved
