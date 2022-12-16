@@ -22,25 +22,23 @@ function onRenderMeme(width = gElCanvas.width, height = gElCanvas.height) {
         meme.layers.forEach(layer => {
             const { val, pos } = layer
             const { size, color } = val.fontSettings
-            onDrawText(val.content, pos.x * width, pos.y * height, size, color)
+            onDrawText(val, pos.x * width, pos.y * height)
         })
     }
-
-    console.log(meme);
 }
 
 
-function onDrawText(text, x, y, size, color) {
-
+function onDrawText(layerInfo, x, y) {
     gCtx.lineWidth = 2
     gCtx.strokeStyle = 'black'
-    gCtx.fillStyle = color
-    gCtx.font = `${size}px impact`;
+    gCtx.fillStyle = layerInfo.fontSettings.color
+    gCtx.font = `${layerInfo.fontSettings.size}px impact`;
     gCtx.textAlign = 'center'
     gCtx.textBaseline = 'middle'
-
-    gCtx.fillText(text, x, y) // Draws (fills) a given text at the given (x, y) position.
-    gCtx.strokeText(text, x, y) // Draws (strokes) a given text at the given (x, y) position.
+    setLayerBounds({ width: gCtx.measureText(layerInfo.content).width, height: layerInfo.fontSettings.size })
+    gCtx.fillText(layerInfo.content, x, y) // Draws (fills) a given text at the given (x, y) position.
+    gCtx.strokeText(layerInfo.content, x, y) // Draws (strokes) a given text at the given (x, y) position.
+    console.log(getMeme());
 }
 
 function resizeCanvas(width) {
@@ -78,7 +76,6 @@ function onImgSelect(val, test) {
 
 function onFontChange(isIncrease = true) {
     let changeValue = isIncrease ? 2 : -2
-    console.log('getFontSize()', getFontSize());
     setFontSize(getFontSize() + changeValue)
     onRenderMeme()
 }

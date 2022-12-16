@@ -22,6 +22,48 @@ body {
     padding-inline: var(--inner-padding);
 }
 
+.main-header {
+    height: 50px;
+    background-color: #fff;
+    box-shadow: 0px 1px 0px #DBDBDB;
+    justify-content: flex-end;
+    margin-bottom: 30px;
+}
+
+.logo {
+    max-width: 152px;
+    flex-wrap: wrap;
+}
+.logo > img{
+    max-width: 100%;
+}
+
+.main-header .main-nav {
+    /* margin-left: 364px; */
+    /* margin: 0; */
+    height: 100%;
+    /* margin-inline-end: 20px; */
+    /* max-width: 18.5vw; */
+}
+
+.clean-list {
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+    height: 100%;
+}
+
+.main-header .main-nav button {
+    color: inherit;
+    background: inherit;
+    text-decoration: none;
+    /* font-family: lato-bold, serif; */
+    padding-inline: 38px;
+    font-size: 1em;
+    letter-spacing: 0.05em;
+    /* border: 1px solid var(--clr-border-dark); */
+    border: none;
+}
 /* CANVAS CONTAINER */
 
 .editor {

@@ -1,12 +1,12 @@
 'use strict'
 
 let gMeme = createMeme()
-let gKeywordSearchCountMap = {'funny': 12,'cat': 16, 'baby': 2}
+let gKeywordSearchCountMap = { 'funny': 12, 'cat': 16, 'baby': 2 }
 
 // Placeholders for testing purposes
 addMemeLayer(createMemeLayer({ content: 'Top Text', fontSettings: { size: 40, color: "#fff" } }, 'txt', { x: 0.5, y: 0.1 }))
-addMemeLayer(createMemeLayer({ content: 'Middle Text', fontSettings: { size: 40, color: "#fff" } }, 'txt', { x: 0.5, y: 0.5 }))
-addMemeLayer(createMemeLayer({ content: 'Bottom Text', fontSettings: { size: 40, color: "#fff" } }, 'txt', { x: 0.5, y: 0.9 }))
+// addMemeLayer(createMemeLayer({ content: 'Middle Text', fontSettings: { size: 40, color: "#fff" } }, 'txt', { x: 0.5, y: 0.5 }))
+// addMemeLayer(createMemeLayer({ content: 'Bottom Text', fontSettings: { size: 40, color: "#fff" } }, 'txt', { x: 0.5, y: 0.9 }))
 
 
 // CREATE
@@ -21,8 +21,10 @@ function createMeme() {
 
 function createMemeLayer(layerInput, layerType = 'txt', layerPos = { x: 0, y: 0 }) {
     return {
+        idx: 0,
         type: layerType,
         pos: layerPos,
+        bounds: { x: 0, y: 0 },
         val: layerInput
     }
 }
@@ -49,7 +51,11 @@ function setFontColor(color) {
     memeText.fontSettings.color = color
 }
 
-function setMemeSize(size){
+function setLayerBounds(bounds){
+    gMeme.layers[gMeme.activeLayer].bounds = bounds
+}
+
+function setMemeSize(size) {
     gMeme.size = size
 }
 function setMemeImage(path) {
