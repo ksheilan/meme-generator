@@ -1,6 +1,6 @@
 'use strict'
 
-const HOVER_PADDING = 10
+const HOVER_PADDING = 20
 
 let gElCanvas = document.getElementById('meme-canvas')
 let gCtx = gElCanvas.getContext('2d')
@@ -21,39 +21,34 @@ function onRenderMeme(width = gElCanvas.width, height = gElCanvas.height) {
     elImg.src = meme.bgImage
     elImg.onload = () => {
         gCtx.drawImage(elImg, 0, 0, width, height)
-        meme.layers.forEach(layer => {
-            const { val, pos } = layer
-            const { size, color } = val.fontSettings
-            onDrawText(val, pos.x * width, pos.y * height, layer.isHovered)
+        meme.layers.forEach((layer, idx) => {
+            onDrawText(layer, idx, layer.pos.x * width, layer.pos.y * height)
         })
     }
 }
 
 
-function onDrawText(layerData, x, y, isHovered) {
+function onDrawText(layer, idx, x, y) {
+    const layerData = layer.val
     gCtx.lineWidth = 2
     gCtx.font = `${layerData.fontSettings.size}px impact`;
     gCtx.textAlign = 'center'
     gCtx.textBaseline = 'middle'
     let layerSize = { width: gCtx.measureText(layerData.content).width, height: layerData.fontSettings.size }
-    let bounds = setLayerBounds(layerSize)
-    if (isHovered) {
+    let bounds = setLayerBounds(idx, layerSize)
+    if (layer.isHovered) {
         gCtx.beginPath()
-        // gCtx.rect(x, y, 150, 150)
-        // gCtx.strokeStyle = 'black'
-        // gCtx.stroke()
-        // gCtx.fillStyle = 'orange'
-        // gCtx.fill()
-
-        // Second way - using the built in .fillRect() and .strokeRect() methods to directly
-        // paint on the canvas, without using a path
-        gCtx.fillStyle = 'orange'
-        gCtx.fillRect(
+        gCtx.fillStyle = 'rgba(255, 255, 255, 0.3)'
+        gCtx.roundRect(
             bounds.min.x - HOVER_PADDING,
             bounds.min.y - HOVER_PADDING * (layerSize.height / layerSize.width),
             bounds.max.x - bounds.min.x + HOVER_PADDING * 2,
-            bounds.max.y - bounds.min.y + HOVER_PADDING * 2 *  (layerSize.height / layerSize.width))
-        gCtx.strokeStyle = 'black'
+            bounds.max.y - bounds.min.y + HOVER_PADDING * 2 * (layerSize.height / layerSize.width),
+            50);
+
+        gCtx.stroke()
+        gCtx.fill()
+
     }
     gCtx.strokeStyle = 'black'
     gCtx.fillStyle = layerData.fontSettings.color
@@ -120,18 +115,21 @@ function onMove(ev) {
     // if (!isDrag) return
 
     const pos = getEvPos(ev)
-    let activeLayer = isCursorOnLayer(pos)
-    if (activeLayer) {
-        setHoveredLayer(activeLayer.idx, true)
+    let layerIdx = getHoveredLayerIndexByBounds(pos)
+    if (layerIdx !== -1) {
+        setHoveredLayer(layerIdx, true)
         onRenderMeme()
-        
+
         return
+
     }
-    activeLayer = getHoveredLayer()
-    if (activeLayer){
-        setHoveredLayer(activeLayer.idx, false)
+    layerIdx = getHoveredLayerIndex()
+    if (layerIdx !== -1){
+        setHoveredLayer(layerIdx, false)
         onRenderMeme()
     }
+    
+
     // setHoveredLayer(layer.idx, false)
     // onRenderMeme()
     // // Calc the delta , the diff we moved
