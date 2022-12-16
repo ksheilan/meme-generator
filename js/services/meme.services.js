@@ -24,8 +24,12 @@ function createMemeLayer(layerInput, layerType = 'txt', layerPos = { x: 0, y: 0 
         idx: 0,
         type: layerType,
         pos: layerPos,
-        bounds: { x: 0, y: 0 },
-        val: layerInput
+        bounds: {
+            min: { x: 0, y: 0 },
+            max: { x: 0, y: 0 }
+        },
+        val: layerInput,
+        isHovered: false
     }
 }
 // READ
@@ -41,6 +45,20 @@ function getActiveLayer() {
     return gMeme.activeLayer
 }
 
+function isCursorOnLayer(pos){
+    // console.log('cursor pos:', pos);
+    return gMeme.layers.find(layer => {
+        return (pos.x > layer.bounds.min.x &&
+                pos.x < layer.bounds.max.x &&
+                pos.y > layer.bounds.min.y &&
+                pos.y < layer.bounds.max.y)
+    })
+}
+
+function getHoveredLayer(){
+    return gMeme.layers.find(layer => layer.isHovered)
+}
+
 // UPDATE
 function setFontSize(size) {
     gMeme.layers[gMeme.activeLayer].val.fontSettings.size = size
@@ -51,10 +69,23 @@ function setFontColor(color) {
     memeText.fontSettings.color = color
 }
 
-function setLayerBounds(bounds){
+function setLayerBounds(size) {
+    let activeLayer = gMeme.layers[getActiveLayer()]
+
+    let layerX = activeLayer.pos.x * gMeme.size.width
+    let layerY = activeLayer.pos.y * gMeme.size.height
+    let bounds = {
+        min: { x: layerX - size.width / 2, y: layerY - size.height / 2 },
+        max: { x: layerX + size.width / 2, y: layerY + size.height / 2 }
+    }
     gMeme.layers[gMeme.activeLayer].bounds = bounds
+
+    return bounds
 }
 
+function setHoveredLayer(idx, isHovered){
+    gMeme.layers[idx].isHovered = isHovered
+}
 function setMemeSize(size) {
     gMeme.size = size
 }

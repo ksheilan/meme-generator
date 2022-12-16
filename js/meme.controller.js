@@ -1,5 +1,7 @@
 'use strict'
 
+const HOVER_PADDING = 10
+
 let gElCanvas = document.getElementById('meme-canvas')
 let gCtx = gElCanvas.getContext('2d')
 
@@ -22,27 +24,44 @@ function onRenderMeme(width = gElCanvas.width, height = gElCanvas.height) {
         meme.layers.forEach(layer => {
             const { val, pos } = layer
             const { size, color } = val.fontSettings
-            onDrawText(val, pos.x * width, pos.y * height)
+            onDrawText(val, pos.x * width, pos.y * height, layer.isHovered)
         })
     }
 }
 
 
-function onDrawText(layerInfo, x, y) {
+function onDrawText(layerData, x, y, isHovered) {
     gCtx.lineWidth = 2
-    gCtx.strokeStyle = 'black'
-    gCtx.fillStyle = layerInfo.fontSettings.color
-    gCtx.font = `${layerInfo.fontSettings.size}px impact`;
+    gCtx.font = `${layerData.fontSettings.size}px impact`;
     gCtx.textAlign = 'center'
     gCtx.textBaseline = 'middle'
-    setLayerBounds({ width: gCtx.measureText(layerInfo.content).width, height: layerInfo.fontSettings.size })
-    gCtx.fillText(layerInfo.content, x, y) // Draws (fills) a given text at the given (x, y) position.
-    gCtx.strokeText(layerInfo.content, x, y) // Draws (strokes) a given text at the given (x, y) position.
-    console.log(getMeme());
+    let layerSize = { width: gCtx.measureText(layerData.content).width, height: layerData.fontSettings.size }
+    let bounds = setLayerBounds(layerSize)
+    if (isHovered) {
+        gCtx.beginPath()
+        // gCtx.rect(x, y, 150, 150)
+        // gCtx.strokeStyle = 'black'
+        // gCtx.stroke()
+        // gCtx.fillStyle = 'orange'
+        // gCtx.fill()
+
+        // Second way - using the built in .fillRect() and .strokeRect() methods to directly
+        // paint on the canvas, without using a path
+        gCtx.fillStyle = 'orange'
+        gCtx.fillRect(
+            bounds.min.x - HOVER_PADDING,
+            bounds.min.y - HOVER_PADDING * (layerSize.height / layerSize.width),
+            bounds.max.x - bounds.min.x + HOVER_PADDING * 2,
+            bounds.max.y - bounds.min.y + HOVER_PADDING * 2 *  (layerSize.height / layerSize.width))
+        gCtx.strokeStyle = 'black'
+    }
+    gCtx.strokeStyle = 'black'
+    gCtx.fillStyle = layerData.fontSettings.color
+    gCtx.fillText(layerData.content, x, y) // Draws (fills) a given text at the given (x, y) position.
+    gCtx.strokeText(layerData.content, x, y) // Draws (strokes) a given text at the given (x, y) position.
 }
 
 function resizeCanvas(width) {
-    const elContainer = document.querySelector('.canvas-container')
     // Note: changing the canvas dimension this way clears the canvas
     gElCanvas.width = width
     // Unless needed, better keep height fixed.
@@ -96,12 +115,25 @@ function addMouseListeners() {
 }
 
 function onMove(ev) {
-    console.log('pos', getEvPos(ev));
     // const { isDrag } = getCircle()
 
     // if (!isDrag) return
 
-    // const pos = getEvPos(ev)
+    const pos = getEvPos(ev)
+    let activeLayer = isCursorOnLayer(pos)
+    if (activeLayer) {
+        setHoveredLayer(activeLayer.idx, true)
+        onRenderMeme()
+        
+        return
+    }
+    activeLayer = getHoveredLayer()
+    if (activeLayer){
+        setHoveredLayer(activeLayer.idx, false)
+        onRenderMeme()
+    }
+    // setHoveredLayer(layer.idx, false)
+    // onRenderMeme()
     // // Calc the delta , the diff we moved
     // const dx = pos.x - gStartPos.x
     // const dy = pos.y - gStartPos.y
