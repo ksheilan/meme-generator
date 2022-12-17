@@ -1,7 +1,7 @@
 'use strict'
 
 let gMeme = createMeme()
-let gKeywordSearchCountMap = { 'funny': 12, 'cat': 16, 'baby': 2 }
+
 
 // Placeholders for testing purposes
 // addMemeLayer(createMemeLayer({ content: 'Top Text', fontSettings: { size: 40, color: "#fff" } }, 'txt', { x: 0.5, y: 0.15 }))
@@ -15,7 +15,7 @@ function createMeme() {
         size: { width: 100, height: 100 },
         layers: [],
         activeLayer: 0,
-        bgImage: 'images/1.jpg'
+        bgImage: { path: 'images/1.jpg', keywords: [] }
     }
 }
 
@@ -28,7 +28,8 @@ function createMemeLayer(layerInput, layerType = 'txt', layerPos = { x: 0, y: 0 
             max: { x: 0, y: 0 }
         },
         val: layerInput,
-        isHovered: false
+        isHovered: false,
+        isDragged: false
     }
 }
 // READ
@@ -58,7 +59,7 @@ function getHoveredLayerIndexByBounds(pos) {
 }
 // UPDATE
 
-function setLayerAlignment(alignment){
+function setLayerAlignment(alignment) {
     const layerData = gMeme.layers[gMeme.activeLayer].val
     layerData.fontSettings.align = alignment
 }
@@ -77,6 +78,10 @@ function setFontBorderColor(color) {
     layerData.fontSettings.borderColor = color
 }
 
+function setFont(name) {
+    const layerData = gMeme.layers[gMeme.activeLayer].val
+    layerData.fontSettings.name = name
+}
 function setLayerBounds(idx, size) {
     const activeLayer = gMeme.layers[idx]
     let layerX = activeLayer.pos.x * gMeme.size.width
@@ -90,31 +95,44 @@ function setLayerBounds(idx, size) {
     return bounds
 }
 
-function setHoveredLayer(idx, isHovered) {
-    gMeme.layers[idx].isHovered = isHovered
+function setHoveredLayer(idx) {
+    const prevHoveredLayerIdx = getHoveredLayerIndex()
+    if (prevHoveredLayerIdx !== -1) {
+        const layer = gMeme.layers[prevHoveredLayerIdx]
+        layer.isHovered = false
+    }
+    if (idx === -1) return
+
+    gMeme.layers[idx].isHovered = true
 }
 function setMemeSize(size) {
     gMeme.size = size
 }
 function setMemeImage(path) {
-    gMeme.bgImage = path
+    console.log('getImageByPath()', getImageByPath(path));
+    gMeme.bgImage = getImageByPath(path)
 }
 
 function setActiveLayer(idx) {
     if (idx === gMeme.layers.length) gMeme.activeLayer = 0
     else gMeme.activeLayer = idx
 }
+
+function setDraggedLayer(idx, isDragged) {
+    gMeme.layers[idx].isDragged = isDragged
+}
 function addMemeLayer(layer) {
     gMeme.layers.push(layer)
     gMeme.activeLayer = gMeme.layers.length - 1
 }
 
-function moveLayerY(isPositive){
+function setLayerPosition(pos) {
     const activeLayer = gMeme.layers[gMeme.activeLayer]
-    activeLayer.pos.y += isPositive ? -0.05 : 0.05
+    activeLayer.pos.x = pos.x / gMeme.size.width
+    activeLayer.pos.y = pos.y / gMeme.size.height
 }
 // DELETE
 
-function deleteLayer(idx){
+function deleteLayer(idx) {
     gMeme.layers.splice(idx, 1)
 }

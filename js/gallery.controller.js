@@ -1,26 +1,39 @@
 'use strict'
 
-function onRenderGallery(){
+function onRenderGallery() {
+    
+    let elKeywords = document.querySelector('.keywords-box')
+    let keywords = getGalleryKeywords()
+    let keywordsHTML = keywords.map(keyword =>
+        `<a style="font-size: ${getKeywordSize(keyword)}em">${keyword}</a>`
+    )
+    elKeywords.innerHTML = keywordsHTML.join('')
+
     let elGallery = document.querySelector('.gallery')
-    let gallery = getGallery()
-    let strHtmls = gallery.map(imgPath => 
-        `<img src="${imgPath}" alt="" srcset="" onclick="onImgSelect('${imgPath}', this)">`
+    let gallery = getGalleryFilter() ? getFilteredGallery() : getGallery()
+
+    let galleryHTML = gallery.map(img =>
+        `<img src="${img.path}" alt="" srcset="" onclick="onImgSelect('${img.path}', this)">`
     )
 
-    elGallery.innerHTML = strHtmls.join('')
+    elGallery.innerHTML = galleryHTML.join('')
+    
 }
 
 function onSearchImage() {
-    const activeTextIdx = getActiveLayer();
     setTimeout(() => {
         const inputVal = document.getElementById('search-box').value
-        // if (!inputVal) document.querySelector('.text-box').classList.add('w-25')
-        // const filterBy = setBooksFilter(inputVal)
-        // renderBooks()
-        // document.querySelector('.text-box').value = inputVal
+        setGalleryFilter(inputVal)
+        // updateKeywords(inputVal)
+        onRenderGallery()
 
-        // const queryStringParams = `?bookName=${filterBy.bookName}`
-        // const newUrl = window.location.protocol + "//" + window.location.host + window.location.pathname + queryStringParams
-        // window.history.pushState({ path: newUrl }, '', newUrl)
+       
     }, 500);
+}
+
+function onImgSelect(val, img) {
+    let canvasHeight = img.height / img.width * gElCanvas.width
+    setMemeImage(val)
+
+    onRenderMeme(gElCanvas.width, canvasHeight)
 }

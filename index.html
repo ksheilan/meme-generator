@@ -16,42 +16,122 @@
         </div>
         <nav class="main-nav">
             <ul class="flex clean-list ">
-                <button>Memes</button>
-                <button>Gallery</button>
-                <button>About</button>
+                <a href="#editor">Editor</a>
+                <a href="#gallery-container">Gallery</a>
             </ul>
         </nav>
     </header>
-    <section class="editor flex align-center center">
-        <div class="canvas-container">
+    <section id="editor" class="flex align-center center full">
+        <div class="canvas-container flex center">
             <canvas id="meme-canvas" width="300" height="300" style="outline: 1px solid green"></canvas>
         </div>
-        <div class="editor-controls flex align-center">
-            <input id="text-box" type="text" placeholder="Change Top Text.." onkeyup="onUpdateActiveText()">
-            <a>Font Color</a>
-            <input type="color" id="fontColor" value="#ffffff" oninput="onColorChange(this.value)">
-            <a>Border Color</a>
-            <input type="color" id="borderColor" value="#000000" oninput="onBorderColorChange(this.value)">
-            <button onclick="onFontChange(true)">A+</button>
-            <button onclick="onFontChange(false)">A-</button>
-            <button onclick="onSetLayerAlignment(0)">L</button>
-            <button onclick="onSetLayerAlignment(1)">M</button>
-            <button onclick="onSetLayerAlignment(2)">R</button>
-            <button onclick="onLayerToggle()">Toggle Lines</button>
-            <button onclick="onDeleteActiveLayer()">Delete Layer</button>
-            <button onclick="onCreateNewLayer()">Add text</button>
-            <button onclick="onMoveLayerY(true)">Move Up</button>
-            <button onclick="onMoveLayerY(false)">Move Down</button>
+        <div class="editor-controls flex">
+
+            <div class="controls-bar flex">
+                <section class="font-settings flex">
+                    <div class="font-input">
+                        <select id="fonts" name="fonts" onchange="onSetFont(this.value)">
+                            <option value="impact">Impact</option>
+                            <option value="helvetica">Helvetica</option>
+                        </select>
+                    </div>
+
+                    <div class="icon">
+                        <!-- <img src="icons/font_smaller.jpg" alt="" srcset="" onclick="onFontChange(false)"> -->
+                        <svg width="17" height="12" viewBox="0 0 17 12" fill="none" xmlns="http://www.w3.org/2000/svg" onclick="onFontSizeChange(false)">
+                            <path fill-rule="evenodd" clip-rule="evenodd"
+                                d="M12 1.5005C12 1.22478 12.08 1 12.1786 1H16.8214C16.9196 1 17 1.22478 17 1.5005C17 1.77622 16.9196 2 16.8214 2H12.1786C12.08 2 12 1.77622 12 1.5005Z"
+                                fill="#727272" />
+                            <path
+                                d="M12.1016 12H7.48438V11.4453C7.89062 11.4193 8.22656 11.3672 8.49219 11.2891C8.76302 11.2109 8.89844 11.1146 8.89844 11C8.89844 10.9531 8.89323 10.8958 8.88281 10.8281C8.8724 10.7604 8.85677 10.7005 8.83594 10.6484L7.91406 8.16406H4.03125C3.88542 8.52865 3.76562 8.84635 3.67188 9.11719C3.58333 9.38802 3.5026 9.63802 3.42969 9.86719C3.36198 10.0911 3.3151 10.2734 3.28906 10.4141C3.26302 10.5547 3.25 10.6693 3.25 10.7578C3.25 10.9661 3.41406 11.1276 3.74219 11.2422C4.07031 11.3568 4.4401 11.4245 4.85156 11.4453V12H0.679688V11.4453C0.815104 11.4349 0.984375 11.4062 1.1875 11.3594C1.39062 11.3073 1.55729 11.2396 1.6875 11.1562C1.89583 11.0156 2.05729 10.8698 2.17188 10.7188C2.28646 10.5625 2.39844 10.349 2.50781 10.0781C3.0651 8.6875 3.67969 7.125 4.35156 5.39062C5.02344 3.65625 5.6224 2.11198 6.14844 0.757812H6.77344L10.4688 10.3203C10.5469 10.5234 10.6354 10.6875 10.7344 10.8125C10.8333 10.9375 10.9714 11.0599 11.1484 11.1797C11.2682 11.2526 11.4245 11.3151 11.6172 11.3672C11.8099 11.4141 11.9714 11.4401 12.1016 11.4453V12ZM7.63281 7.46875L5.95312 3.17188L4.30469 7.46875H7.63281Z"
+                                fill="#727272" />
+                        </svg>
+                    </div>
+
+                    <div class="icon">
+                        <!-- <img src="icons/font_bigger.jpg" alt="" srcset="" onclick="onFontChange(true)"> -->
+                        <svg width="15" height="13" viewBox="0 0 15 13" fill="none" xmlns="http://www.w3.org/2000/svg" onclick="onFontSizeChange(true)">
+                            <path fill-rule="evenodd" clip-rule="evenodd"
+                                d="M10 2.5005C10 2.22478 10.08 2 10.1786 2H14.8214C14.9196 2 15 2.22478 15 2.5005C15 2.77622 14.9196 3 14.8214 3H10.1786C10.08 3 10 2.77622 10 2.5005Z"
+                                fill="#727272" />
+                            <path fill-rule="evenodd" clip-rule="evenodd"
+                                d="M12.4995 -2.18775e-08C12.7752 -9.82524e-09 13 0.08 13 0.178571L13 4.82143C13 4.91964 12.7752 5 12.4995 5C12.2238 5 12 4.91964 12 4.82143L12 0.178571C12 0.08 12.2238 -3.39298e-08 12.4995 -2.18775e-08Z"
+                                fill="#727272" />
+                            <path
+                                d="M12.1016 13H7.48438V12.4453C7.89062 12.4193 8.22656 12.3672 8.49219 12.2891C8.76302 12.2109 8.89844 12.1146 8.89844 12C8.89844 11.9531 8.89323 11.8958 8.88281 11.8281C8.8724 11.7604 8.85677 11.7005 8.83594 11.6484L7.91406 9.16406H4.03125C3.88542 9.52865 3.76562 9.84635 3.67188 10.1172C3.58333 10.388 3.5026 10.638 3.42969 10.8672C3.36198 11.0911 3.3151 11.2734 3.28906 11.4141C3.26302 11.5547 3.25 11.6693 3.25 11.7578C3.25 11.9661 3.41406 12.1276 3.74219 12.2422C4.07031 12.3568 4.4401 12.4245 4.85156 12.4453V13H0.679688V12.4453C0.815104 12.4349 0.984375 12.4062 1.1875 12.3594C1.39062 12.3073 1.55729 12.2396 1.6875 12.1562C1.89583 12.0156 2.05729 11.8698 2.17188 11.7188C2.28646 11.5625 2.39844 11.349 2.50781 11.0781C3.0651 9.6875 3.67969 8.125 4.35156 6.39062C5.02344 4.65625 5.6224 3.11198 6.14844 1.75781H6.77344L10.4688 11.3203C10.5469 11.5234 10.6354 11.6875 10.7344 11.8125C10.8333 11.9375 10.9714 12.0599 11.1484 12.1797C11.2682 12.2526 11.4245 12.3151 11.6172 12.3672C11.8099 12.4141 11.9714 12.4401 12.1016 12.4453V13ZM7.63281 8.46875L5.95312 4.17188L4.30469 8.46875H7.63281Z"
+                                fill="#727272" />
+                        </svg>
+
+                    </div>
+                </section>
+
+                <section class="align-settings flex center align-center">
+                    <div class="icon">
+                        <!-- <img src="icons/align_left.svg" alt="" srcset="" onclick="onSetLayerAlignment(0)"> -->
+                        <svg width="14" height="13" viewBox="0 0 14 13" fill="none" xmlns="http://www.w3.org/2000/svg" onclick="onSetLayerAlignment(0)">
+                            <path fill-rule="evenodd" clip-rule="evenodd"
+                                d="M0.5 1H13.5C13.775 1 14 0.776 14 0.5C14 0.224 13.775 0 13.5 0H0.5C0.224 0 0 0.224 0 0.5C0 0.776 0.224 1 0.5 1ZM9.5 4H0.5C0.224 4 0 4.223 0 4.5C0 4.776 0.224 5 0.5 5H9.5C9.775 5 10 4.776 10 4.5C10 4.224 9.775 4 9.5 4ZM0.5 7.999H13.5C13.775 7.999 14 8.223 14 8.499C14 8.775 13.775 8.999 13.5 8.999H0.5C0.224 8.999 0 8.775 0 8.499C0 8.223 0.224 7.999 0.5 7.999ZM8 12H0.5C0.224 12 0 12.224 0 12.5C0 12.776 0.224 13 0.5 13H8C8.275 13 8.5 12.776 8.5 12.5C8.5 12.224 8.275 12 8 12Z"
+                                fill="#727272" />
+                        </svg>
+
+                    </div>
+                    <div class="icon">
+                        <!-- <img src="icons/align_center.svg" alt="" srcset="" onclick="onSetLayerAlignment(1)"> -->
+                        <svg width="15" height="13" viewBox="0 0 15 13" fill="none" xmlns="http://www.w3.org/2000/svg" onclick="onSetLayerAlignment(1)">
+                            <path fill-rule="evenodd" clip-rule="evenodd"
+                                d="M0.504 1H13.621C13.9 1 14.126 0.776 14.126 0.5C14.126 0.224 13.9 0 13.621 0H0.504C0.226 0 0 0.224 0 0.5C0 0.776 0.226 1 0.504 1ZM2.017 4.499C2.017 4.775 2.244 4.999 2.522 4.999H11.603C11.881 4.999 12.107 4.775 12.107 4.499C12.107 4.223 11.881 3.999 11.603 3.999H2.522C2.244 3.999 2.017 4.223 2.017 4.499ZM0.504 7.999H13.621C13.9 7.999 14.126 8.223 14.126 8.499C14.126 8.775 13.9 8.999 13.621 8.999H0.504C0.226 8.999 0 8.775 0 8.499C0 8.223 0.226 7.999 0.504 7.999ZM11.098 12H3.531C3.253 12 3.027 12.223 3.027 12.5C3.027 12.776 3.253 13 3.531 13H11.098C11.376 13 11.603 12.776 11.603 12.5C11.603 12.224 11.376 12 11.098 12Z"
+                                fill="#727272" />
+                        </svg>
+
+                    </div>
+                    <div class="icon">
+                        <!-- <img src="icons/align_right.svg" alt="" srcset="" onclick="onSetLayerAlignment(2)"> -->
+                        <svg width="15" height="13" viewBox="0 0 15 13" fill="none" xmlns="http://www.w3.org/2000/svg" onclick="onSetLayerAlignment(2)">
+                            <path fill-rule="evenodd" clip-rule="evenodd"
+                                d="M13.622 0.999023H0.505C0.227 0.999023 0 0.775023 0 0.499023C0 0.223023 0.227 -0.000976562 0.505 -0.000976562H13.622C13.9 -0.000976562 14.127 0.223023 14.127 0.499023C14.127 0.775023 13.9 0.999023 13.622 0.999023ZM4.541 4.99802H13.622C13.9 4.99802 14.127 4.77402 14.127 4.49802C14.127 4.22202 13.9 3.99802 13.622 3.99802H4.541C4.263 3.99802 4.037 4.22202 4.037 4.49802C4.037 4.77402 4.263 4.99802 4.541 4.99802ZM0.505 8.99902H13.622C13.9 8.99902 14.127 8.77502 14.127 8.49902C14.127 8.22302 13.9 7.99902 13.622 7.99902H0.505C0.227 7.99902 0 8.22302 0 8.49902C0 8.77502 0.227 8.99902 0.505 8.99902ZM13.622 11.999H6.055C5.775 11.999 5.55 12.222 5.55 12.499C5.55 12.775 5.776 12.999 6.055 12.999H13.622C13.9 12.999 14.127 12.775 14.127 12.499C14.127 12.223 13.9 11.999 13.622 11.999Z"
+                                fill="#727272" />
+                        </svg>
+
+                    </div>
+                </section>
+                <section class="color-settings flex center align-center">
+                    <!-- <button onclick="onSetLayerAlignment(0)">F</button> -->
+                    <input type="color" id="fontColor" value="#ffffff" oninput="onColorChange(this.value)">
+                    <input type="color" id="borderColor" value="#000000" oninput="onBorderColorChange(this.value)">
+                </section>
+            </div>
+            <div class="editor-text">
+                <input id="text-box" type="text" placeholder="Enter text.." onkeyup="onUpdateActiveText()">
+            </div>
+
+            <div class="editor-actions">
+                <button class="btn" onclick="onCreateNewLayer()">Add Layer</button>
+                <button class="btn" onclick="onDeleteActiveLayer()">Delete Layer</button>
+            </div>
+            <div class="editor-export">
+                <!-- <input type="file" class="btn" name="image" onchange="onImgInput(event)" /> -->
+                <a href="#" class="btn" onclick="downloadImg(this)" download="my-img.jpg">Download</a>
+                <a href="#" class="btn" onclick="onUploadImg()">Share</a>
+            </div>
+
 
         </div>
     </section>
-    <div class="search-container">
-        <input id="search-box" type="text" placeholder="Search.." onkeyup="onSearchImage()">
-    </div>
-    <section class="gallery flex space-between">
+
+    <section id="gallery-container">
+        <div class="search-container flex">
+            <input id="search-box" type="text" placeholder="Search.." onkeyup="onSearchImage()">
+            <div class="keywords-box flex align-center space-between">
+                <a>asdasd</a>
+                <a>asdasasdd</a>
+            </div>
+        </div>
+        <div class="gallery flex space-between"></div>
     </section>
+    <script src="js/util.js"></script>
     <script src="js/services/meme.services.js"></script>
     <script src="js/services/gallery.services.js"></script>
+    <script src="js/services/upload.service.js"></script>
     <script src="js/meme.controller.js"></script>
     <script src="js/gallery.controller.js"></script>
     <script src="js/main.js"></script>

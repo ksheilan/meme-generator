@@ -2,6 +2,7 @@
 
 function onInit(){
     addListeners()
+    onCreateNewLayer()
     onRenderMeme()
     onRenderGallery()
     onClearCanvas()

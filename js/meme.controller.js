@@ -22,7 +22,7 @@ function onRenderMeme(width = gElCanvas.width, height = gElCanvas.height) {
     setMemeSize({ width, height })
     const elImg = new Image()
     const meme = getMeme()
-    elImg.src = meme.bgImage
+    elImg.src = meme.bgImage.path
     elImg.onload = () => {
         gCtx.drawImage(elImg, 0, 0, width, height)
         meme.layers.forEach((layer, idx) => {
@@ -31,13 +31,12 @@ function onRenderMeme(width = gElCanvas.width, height = gElCanvas.height) {
     }
 }
 
-
 function onDrawText(layer, idx, x, y) {
     const layerData = layer.val
 
     // gCtx.textAlign = 'start'
     gCtx.lineWidth = 2
-    gCtx.font = `${layerData.fontSettings.size}px impact`;
+    gCtx.font = `${layerData.fontSettings.size}px ${layerData.fontSettings.name}`;
     gCtx.textAlign = layerData.fontSettings.align
     gCtx.textBaseline = 'middle'
     let layerSize = { width: gCtx.measureText(layerData.content).width, height: layerData.fontSettings.size }
@@ -57,8 +56,10 @@ function onDrawText(layer, idx, x, y) {
         gCtx.fill()
 
     }
+    
     gCtx.strokeStyle = layerData.fontSettings.borderColor
     gCtx.fillStyle = layerData.fontSettings.color
+
     gCtx.fillText(layerData.content, x, y) // Draws (fills) a given text at the given (x, y) position.
     gCtx.strokeText(layerData.content, x, y) // Draws (strokes) a given text at the given (x, y) position.
 }
@@ -88,14 +89,8 @@ function onUpdateActiveText() {
     }, 500);
 }
 
-function onImgSelect(val, test) {
-    let canvasHeight = test.height / test.width * gElCanvas.width
-    setMemeImage(val)
 
-    onRenderMeme(gElCanvas.width, canvasHeight)
-}
-
-function onFontChange(isIncrease = true) {
+function onFontSizeChange(isIncrease = true) {
     let changeValue = isIncrease ? 2 : -2
     setFontSize(getFontSize() + changeValue)
     onRenderMeme()
@@ -123,23 +118,24 @@ function addMouseListeners() {
 }
 
 function onClick() {
-    let activeLayerIdx = getHoveredLayerIndex()
+    let activeLayerIdx = getActiveLayer()
     if (activeLayerIdx !== -1) {
         let meme = getMeme()
-        setActiveLayer(activeLayerIdx)
-        console.log(meme.layers[activeLayerIdx]);
-        document.getElementById('text-box').value = meme.layers[activeLayerIdx].val.content
-        // setFontColor("#FFFF00")
+        const layer = meme.layers[activeLayerIdx]
+
+        document.getElementById('text-box').value = layer.val.content
+        setDraggedLayer(activeLayerIdx, false)
         onRenderMeme()
-    }
-    else {
-        console.log('nice');
     }
 }
 
 function onDown(ev) {
-    console.log('asd');
-    // document.body.style.cursor = 'text'
+    const pos = getEvPos(ev)
+    const activeLayerIdx = getHoveredLayerIndexByBounds(pos)
+    if (activeLayerIdx !== -1) {
+        setDraggedLayer(activeLayerIdx, true)
+        setActiveLayer(activeLayerIdx)
+    }
 }
 function onMove(ev) {
     // const { isDrag } = getCircle()
@@ -148,20 +144,17 @@ function onMove(ev) {
 
     const pos = getEvPos(ev)
     let layerIdx = getHoveredLayerIndexByBounds(pos)
-    let hoveredIdx = getHoveredLayerIndex()
-    if (layerIdx !== -1 && hoveredIdx === -1) {
-        setHoveredLayer(layerIdx, true)
-        onRenderMeme()
-
-        return
-
+    if (layerIdx !== -1) {
+        const layer = getMeme().layers[layerIdx]
+        if (layer.isDragged) {
+            setLayerPosition(pos)
+            onRenderMeme()
+            
+        }
     }
-    // layerIdx = getHoveredLayerIndex()
-    if (layerIdx === -1 && hoveredIdx !== -1) {
-        setHoveredLayer(hoveredIdx, false)
-        onRenderMeme()
-    }
-
+    setHoveredLayer(layerIdx)
+    onRenderMeme()
+    // return
     // setHoveredLayer(layer.idx, false)
     // onRenderMeme()
     // // Calc the delta , the diff we moved
@@ -209,10 +202,11 @@ function getEvPos(ev) {
 }
 
 function onCreateNewLayer() {
-    document.getElementById('text-box').value = 'Text'
+    document.getElementById('text-box').value = ''
     let layerData = {
-        content: 'Text',
+        content: '',
         fontSettings: {
+            name: document.getElementById('fonts').value,
             size: 40,
             align: 'center',
             color: document.getElementById('fontColor').value,
@@ -234,6 +228,10 @@ function onMoveLayerY(isPositive) {
     onRenderMeme()
 }
 
+function onSetFont(val){
+    setFont(val)
+    onRenderMeme()
+}
 function onSetLayerAlignment(alignment) {
     let align = 'center'
     switch (alignment) {
@@ -247,4 +245,44 @@ function onSetLayerAlignment(alignment) {
 
     setLayerAlignment(align)
     onRenderMeme()
+}
+
+function downloadImg(elLink) {
+    const imgContent = gElCanvas.toDataURL('image/jpeg') // image/jpeg the default format
+    elLink.href = imgContent
+}
+
+function onUploadImg() {
+    const imgDataUrl = gElCanvas.toDataURL('image/jpeg') // Gets the canvas content as an image format
+
+    // A function to be called if request succeeds
+    function onSuccess(uploadedImgUrl) {
+        // Encode the instance of certain characters in the url
+        const encodedUploadedImgUrl = encodeURIComponent(uploadedImgUrl)
+        window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodedUploadedImgUrl}&t=${encodedUploadedImgUrl}`)
+    }
+    // Send the image to the server
+    doUploadImg(imgDataUrl, onSuccess)
+}
+
+// The next 2 functions handle IMAGE UPLOADING to img tag from file system:
+function onImgInput(ev) {
+    loadImageFromInput(ev)
+}
+
+// CallBack func will run on success load of the img
+function loadImageFromInput(ev) {
+    const reader = new FileReader()
+    // After we read the file
+    reader.onload = (event) => {
+        let img = new Image() // Create a new html img element
+        img.src = event.target.result // Set the img src to the img file we read
+        // Run the callBack func, To render the img on the canvas
+        img.onload = () => {
+            gCtx.drawImage(img, 0, 0, img.width, img.height)
+        }
+    }
+
+    reader.readAsDataURL(ev.target.files[0]) // Read the file we picked
+
 }
