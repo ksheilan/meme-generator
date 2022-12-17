@@ -1,7 +1,11 @@
 'use strict'
 
-const HOVER_PADDING = 20
-
+const HOVER_PADDING = 7
+const ALIGN = {
+    Left: 0,
+    Middle: 1,
+    Right: 2
+}
 let gElCanvas = document.getElementById('meme-canvas')
 let gCtx = gElCanvas.getContext('2d')
 
@@ -30,12 +34,15 @@ function onRenderMeme(width = gElCanvas.width, height = gElCanvas.height) {
 
 function onDrawText(layer, idx, x, y) {
     const layerData = layer.val
+
+    // gCtx.textAlign = 'start'
     gCtx.lineWidth = 2
     gCtx.font = `${layerData.fontSettings.size}px impact`;
-    gCtx.textAlign = 'center'
+    gCtx.textAlign = layerData.fontSettings.align
     gCtx.textBaseline = 'middle'
     let layerSize = { width: gCtx.measureText(layerData.content).width, height: layerData.fontSettings.size }
     let bounds = setLayerBounds(idx, layerSize)
+
     if (layer.isHovered) {
         gCtx.beginPath()
         gCtx.fillStyle = 'rgba(255, 255, 255, 0.3)'
@@ -50,7 +57,7 @@ function onDrawText(layer, idx, x, y) {
         gCtx.fill()
 
     }
-    gCtx.strokeStyle = 'black'
+    gCtx.strokeStyle = layerData.fontSettings.borderColor
     gCtx.fillStyle = layerData.fontSettings.color
     gCtx.fillText(layerData.content, x, y) // Draws (fills) a given text at the given (x, y) position.
     gCtx.strokeText(layerData.content, x, y) // Draws (strokes) a given text at the given (x, y) position.
@@ -99,6 +106,11 @@ function onColorChange(color) {
     onRenderMeme()
 }
 
+function onBorderColorChange(color) {
+    setFontBorderColor(color)
+    onRenderMeme()
+}
+
 function onLayerToggle() {
     setActiveLayer(getActiveLayer() + 1)
 }
@@ -110,9 +122,9 @@ function addMouseListeners() {
     // gElCanvas.addEventListener('mouseup', onUp)
 }
 
-function onClick(){
+function onClick() {
     let activeLayerIdx = getHoveredLayerIndex()
-    if (activeLayerIdx !== -1){
+    if (activeLayerIdx !== -1) {
         let meme = getMeme()
         setActiveLayer(activeLayerIdx)
         console.log(meme.layers[activeLayerIdx]);
@@ -120,12 +132,12 @@ function onClick(){
         // setFontColor("#FFFF00")
         onRenderMeme()
     }
-    else{
+    else {
         console.log('nice');
     }
 }
 
-function onDown(ev){
+function onDown(ev) {
     console.log('asd');
     // document.body.style.cursor = 'text'
 }
@@ -145,11 +157,11 @@ function onMove(ev) {
 
     }
     // layerIdx = getHoveredLayerIndex()
-    if (layerIdx === -1 && hoveredIdx !== -1){
+    if (layerIdx === -1 && hoveredIdx !== -1) {
         setHoveredLayer(hoveredIdx, false)
         onRenderMeme()
     }
-    
+
     // setHoveredLayer(layer.idx, false)
     // onRenderMeme()
     // // Calc the delta , the diff we moved
@@ -194,4 +206,45 @@ function getEvPos(ev) {
     //     }
     // }
     return pos
+}
+
+function onCreateNewLayer() {
+    document.getElementById('text-box').value = 'Text'
+    let layerData = {
+        content: 'Text',
+        fontSettings: {
+            size: 40,
+            align: 'center',
+            color: document.getElementById('fontColor').value,
+            borderColor: document.getElementById('borderColor').value
+        }
+    }
+    let layer = createMemeLayer(layerData, 'txt', { x: 0.5, y: 0.5 })
+    addMemeLayer(layer)
+    onRenderMeme()
+}
+
+function onDeleteActiveLayer() {
+    deleteLayer(getActiveLayer())
+    onRenderMeme()
+}
+
+function onMoveLayerY(isPositive) {
+    moveLayerY(isPositive)
+    onRenderMeme()
+}
+
+function onSetLayerAlignment(alignment) {
+    let align = 'center'
+    switch (alignment) {
+        case ALIGN.Left:
+            align = 'end'
+            break;
+        case ALIGN.Right:
+            align = 'start'
+            break;
+    }
+
+    setLayerAlignment(align)
+    onRenderMeme()
 }

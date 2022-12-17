@@ -4,9 +4,9 @@ let gMeme = createMeme()
 let gKeywordSearchCountMap = { 'funny': 12, 'cat': 16, 'baby': 2 }
 
 // Placeholders for testing purposes
-addMemeLayer(createMemeLayer({ content: 'Top Text', fontSettings: { size: 40, color: "#fff" } }, 'txt', { x: 0.5, y: 0.15 }))
-addMemeLayer(createMemeLayer({ content: 'Middle Text', fontSettings: { size: 40, color: "#fff" } }, 'txt', { x: 0.5, y: 0.5 }))
-addMemeLayer(createMemeLayer({ content: 'Bottom Text', fontSettings: { size: 40, color: "#fff" } }, 'txt', { x: 0.5, y: 0.85 }))
+// addMemeLayer(createMemeLayer({ content: 'Top Text', fontSettings: { size: 40, color: "#fff" } }, 'txt', { x: 0.5, y: 0.15 }))
+// addMemeLayer(createMemeLayer({ content: 'Middle Text', fontSettings: { size: 40, color: "#fff" } }, 'txt', { x: 0.5, y: 0.5 }))
+// addMemeLayer(createMemeLayer({ content: 'Bottom Text', fontSettings: { size: 40, color: "#fff" } }, 'txt', { x: 0.5, y: 0.85 }))
 
 
 // CREATE
@@ -57,24 +57,35 @@ function getHoveredLayerIndexByBounds(pos) {
     })
 }
 // UPDATE
+
+function setLayerAlignment(alignment){
+    const layerData = gMeme.layers[gMeme.activeLayer].val
+    layerData.fontSettings.align = alignment
+}
 function setFontSize(size) {
-    gMeme.layers[gMeme.activeLayer].val.fontSettings.size = size
+    const layerData = gMeme.layers[gMeme.activeLayer].val
+    layerData.fontSettings.size = size
 }
 
 function setFontColor(color) {
-    let memeText = gMeme.layers[gMeme.activeLayer].val
-    memeText.fontSettings.color = color
+    const layerData = gMeme.layers[gMeme.activeLayer].val
+    layerData.fontSettings.color = color
+}
+
+function setFontBorderColor(color) {
+    const layerData = gMeme.layers[gMeme.activeLayer].val
+    layerData.fontSettings.borderColor = color
 }
 
 function setLayerBounds(idx, size) {
-    let activeLayer = gMeme.layers[idx]
+    const activeLayer = gMeme.layers[idx]
     let layerX = activeLayer.pos.x * gMeme.size.width
     let layerY = activeLayer.pos.y * gMeme.size.height
     let bounds = {
-        min: { x: layerX - size.width / 2, y: layerY - size.height / 2 },
-        max: { x: layerX + size.width / 2, y: layerY + size.height / 2 }
+        min: { x: layerX - size.width, y: layerY - size.height / 2 },
+        max: { x: layerX + size.width, y: layerY + size.height / 2 }
     }
-    gMeme.layers[idx].bounds = bounds
+    activeLayer.bounds = bounds
 
     return bounds
 }
@@ -95,6 +106,15 @@ function setActiveLayer(idx) {
 }
 function addMemeLayer(layer) {
     gMeme.layers.push(layer)
+    gMeme.activeLayer = gMeme.layers.length - 1
 }
 
+function moveLayerY(isPositive){
+    const activeLayer = gMeme.layers[gMeme.activeLayer]
+    activeLayer.pos.y += isPositive ? -0.05 : 0.05
+}
 // DELETE
+
+function deleteLayer(idx){
+    gMeme.layers.splice(idx, 1)
+}

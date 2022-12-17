@@ -28,10 +28,21 @@
         </div>
         <div class="editor-controls flex align-center">
             <input id="text-box" type="text" placeholder="Change Top Text.." onkeyup="onUpdateActiveText()">
-            <input type="color" id="favcolor" name="favcolor" value="#ffffff" oninput="onColorChange(this.value)">
+            <a>Font Color</a>
+            <input type="color" id="fontColor" value="#ffffff" oninput="onColorChange(this.value)">
+            <a>Border Color</a>
+            <input type="color" id="borderColor" value="#000000" oninput="onBorderColorChange(this.value)">
             <button onclick="onFontChange(true)">A+</button>
             <button onclick="onFontChange(false)">A-</button>
+            <button onclick="onSetLayerAlignment(0)">L</button>
+            <button onclick="onSetLayerAlignment(1)">M</button>
+            <button onclick="onSetLayerAlignment(2)">R</button>
             <button onclick="onLayerToggle()">Toggle Lines</button>
+            <button onclick="onDeleteActiveLayer()">Delete Layer</button>
+            <button onclick="onCreateNewLayer()">Add text</button>
+            <button onclick="onMoveLayerY(true)">Move Up</button>
+            <button onclick="onMoveLayerY(false)">Move Down</button>
+
         </div>
     </section>
     <div class="search-container">
